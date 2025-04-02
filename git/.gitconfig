@@ -1,102 +1,4 @@
 [alias]
-        l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-	ll = log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]\" --decorate --numstat
-	lf = log -u
-	lm = !git log --committer=\"`git me`\"
-
-        s = status -sb
-	co = checkout
-	ci = commit
-	cp = cherry-pick
-	b = branch -avv
-	br = branch
-	df = diff
-	rso = remote show origin
-	me = config user.name
-	h = git config -l | grep alias | cut -c 7-
-
-	sps = !git stash -u && git pull --rebase && git stash apply
-	apc = !git add -A && git commit && git pull --rebase && git push
-
-	up = !git update
-	smash = !git ir
-
-	unstage = reset HEAD
-	undo = reset --soft HEAD^
-
-	# interactive rebase
-	ir = !sh -c 'git rebase -i origin/${1-master}' -
-
-	# update current branch
-	update = !sh -c 'git fetch origin && git rebase -p origin/${1-master}' -
-
-	# creates a diff of current branch against supplied branch, usage: git export-branch [refbranch]
-	branch-name = !git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
-	export-branch = !git format-patch --stdout $1 > ~/branches/`git branch-name`.diff
-
-	# all commits that aren't merges on all branches
-	all = !git log --pretty=oneline --abbrev-commit --all --no-merges
-
-	# all commits today for only me
-	today = !git all --since='12am' --committer=\"`git me`\"
-
-	# today's commits without formatting or paging
-	today-text = !git --no-pager today --no-color
-
-	# files different from master on current branch
-	fdm = !git diff origin/master... --name-status
-
-	# last commit info in svn style
-	last = !git show --name-status
-	last-files = !git last --pretty=format:""
-
-	# `git done`
-	# current branch: merge, push, non-forced delete branch, show info
-	done = !sh -c '~/.bin/done -d $1' -
-
-	# `git publish`
-	# current branch: merge, push, show info
-	publish = !sh -c '~/.bin/done $1' -
-
-	# `git spawn my-new-branch`
-	# make new branch based on master no matter which branch is checked out
-	spawn = !sh -c 'git checkout -b $1 ${2-master} && git config branch.$1.localmerge ${2-master}' -
-
-	# `git nuke my-old-branch`
-	# (Checks out master and does a non-forced delete on the branch entered)
-	nuke = !git co master && sh -c 'git br -d $1' -
-
-	# `git sync`
-	# update current branch and master
-	sync = !git update && \
-		git co master && \
-		git pull && \
-		git co @{-1}
-
-	# `git save`
-	# saves a commit in current branch: local branches you will be rebasing
-	save = !git commit -am \"save game\"
-
-
-	# attempt to cleanup some common problems
-	unfuck = !git fsck && git remote prune origin && git gc
-
-	# list files changed by last commit in absolute location
-	list = !git show --pretty=format:"" --name-only | sed '/^$/d' | sed \"s|^|`git top`/|g\"
-
-	# give a count of dirty files
-	dirty = !git status --porcelain -uno | wc -l
-
-	# number of non-merge commits
-	peeps = !git log --pretty=format:"%Cblue%aN%Creset" --no-merges | sort | uniq -c | sort -rn
-	mergers = !git log --pretty=format:"%Cred%aN%Creset" --merges | sort | uniq -c | sort -rn
-
-	# awesome placeholders
-	crunk = status
-	deploy = status
-	crazy = status
-	stupid = status
-
 	root = rev-parse --show-toplevel
 
 [rerere]
@@ -104,7 +6,7 @@
 
 [core]
 	editor = vim
-	pager = delta --light
+	pager = delta --light --diff-so-fancy
 
 [color]
 	ui = true
@@ -136,16 +38,17 @@
 [push]
 	default = current
 
-[diff-so-fancy]
-	useUnicodeRuler = false
-	stripLeadingSymbols = false
-	changeHunkIndicators = true
+[gpg]
+	format = ssh
+
+[pull]
+	ff = only
+
+[user]
+	signingkey = /Users/silver/.ssh/key.pub
 
 [include]
 	path = ~/.gitconfig.local
 
-[credential]
-	helper = store --file ~/.git-credentials
-
-[pull]
-	ff = only
+[commit]
+	gpgsign = true
